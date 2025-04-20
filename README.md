@@ -23,7 +23,9 @@ The code crop 200px per picture edge.
 
    --- if you rename the file put your `python filename.py` ---
    
-5. Drag and Drop window opens.
-6. Drop your pictures.
-7. Cropped pictures are placed in the same directory of the source pictures.
-8. Cropped Pictures 
+5. Drag and Drop window open.
+6. Set Prefix, for example `cropped_` for the output pictures to be named and the cropping in pixel.
+7. Drop your pictures.
+8. Cropped pictures are placed (with the used prefix) in the same directory of the source pictures.
+
+If the pictures are too small to crop -> pictures will be skipped.
