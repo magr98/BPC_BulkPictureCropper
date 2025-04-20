@@ -1,4 +1,4 @@
-Used with Python 3.13.
+Used with Python 3.13. - 20/04/25
 
 Download the File and Place the .py File on your Desktop.
 
@@ -8,8 +8,9 @@ pip install tkinterdnd2
 pip install pillow
 ```
 
-https://pypi.org/project/tkinterdnd2/
-https://pypi.org/project/pillow/
+https://pypi.org/project/tkinterdnd2/ - 20/04/25
+
+https://pypi.org/project/pillow/ - 20/04/25
 
 The code crop 200px per picture edge.
 
