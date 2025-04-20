@@ -1,0 +1,43 @@
+import tkinter as tk
+from tkinterdnd2 import DND_FILES, TkinterDnD
+from PIL import Image
+import os
+
+def crop_image(file_path):
+    try:
+        img = Image.open(file_path)
+        w, h = img.size
+        if w > 400 and h > 400:
+            cropped = img.crop((200, 200, w - 200, h - 200))
+            output_path = os.path.join(os.path.dirname(file_path), "cropped_" + os.path.basename(file_path))
+            cropped.save(output_path)
+            return f"Cropped: {os.path.basename(file_path)}"
+        else:
+            return f"Skipped (too small): {os.path.basename(file_path)}"
+    except Exception as e:
+        return f"Error processing {os.path.basename(file_path)}: {e}"
+
+def on_drop(event):
+    file_list = root.tk.splitlist(event.data)
+    results = []
+    for file_path in file_list:
+        file_path = file_path.strip("{}")  # clean file path
+        if os.path.isfile(file_path):
+            result = crop_image(file_path)
+            results.append(result)
+    status_label.config(text="\n".join(results))
+
+# GUI
+root = TkinterDnD.Tk()
+root.title("200px Multi-Image Cropper")
+root.geometry("420x250")
+
+label = tk.Label(root, text="Drop image files here\n(Multiple selection supported)", width=50, height=10, relief="groove")
+label.pack(padx=10, pady=20)
+label.drop_target_register(DND_FILES)
+label.dnd_bind("<<Drop>>", on_drop)
+
+status_label = tk.Label(root, text="", justify="left")
+status_label.pack()
+
+root.mainloop()
