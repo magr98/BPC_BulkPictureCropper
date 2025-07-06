@@ -59,15 +59,31 @@ def on_drop(event):
         prefix = "cropped_"
 
     try:
-        crop_px_top = int(crop_top_entry.get().strip())
-        crop_px_bottom = int(crop_bottom_entry.get().strip())
-        crop_px_left = int(crop_left_entry.get().strip())
-        crop_px_right = int(crop_right_entry.get().strip())
-    except:
-        crop_px_top = crop_px_bottom = crop_px_left = crop_px_right = 200  # fallback if invalid
-        status_label.config(text="? Invalid crop size input, using default: 200px")
+        crop_mode = crop_mode_var.get()
 
-    crop_mode = crop_mode_var.get()
+        if crop_mode == "crop_all_edges":
+            crop_value = int(crop_all_entry.get().strip())
+            crop_px_top = crop_px_bottom = crop_px_left = crop_px_right = crop_value
+
+        elif crop_mode == "crop_left_right":
+            crop_value = int(crop_left_entry.get().strip())
+            crop_px_left = crop_px_right = crop_value
+            crop_px_top = crop_px_bottom = 0
+
+        elif crop_mode == "crop_top_bottom":
+            crop_value = int(crop_top_entry.get().strip())
+            crop_px_top = crop_px_bottom = crop_value
+            crop_px_left = crop_px_right = 0
+
+        elif crop_mode == "crop_specific":
+            crop_px_top = int(crop_top_entry.get().strip())
+            crop_px_bottom = int(crop_bottom_entry.get().strip())
+            crop_px_left = int(crop_left_entry.get().strip())
+            crop_px_right = int(crop_right_entry.get().strip())
+
+    except:
+        crop_px_top = crop_px_bottom = crop_px_left = crop_px_right = 200
+        status_label.config(text="? Invalid crop size input, using default: 200px")
 
     results = []
     for file_path in file_list:
@@ -78,26 +94,23 @@ def on_drop(event):
     status_label.config(text="\n".join(results))
 
 def update_crop_inputs(*args):
-    # Hide all inputs first
     for widget in crop_inputs_frame.winfo_children():
         widget.grid_forget()
 
-    # Show relevant fields based on selected crop mode
     crop_mode = crop_mode_var.get()
 
     if crop_mode == "crop_all_edges":
         tk.Label(crop_inputs_frame, text="Crop size (px from all edges):").grid(row=0, column=0)
         crop_all_entry.grid(row=0, column=1, padx=5)
+
     elif crop_mode == "crop_left_right":
-        tk.Label(crop_inputs_frame, text="Left crop (px):").grid(row=0, column=0)
+        tk.Label(crop_inputs_frame, text="Crop px (left & right):").grid(row=0, column=0)
         crop_left_entry.grid(row=0, column=1, padx=5)
-        tk.Label(crop_inputs_frame, text="Right crop (px):").grid(row=1, column=0)
-        crop_right_entry.grid(row=1, column=1, padx=5)
+
     elif crop_mode == "crop_top_bottom":
-        tk.Label(crop_inputs_frame, text="Top crop (px):").grid(row=0, column=0)
+        tk.Label(crop_inputs_frame, text="Crop px (top & bottom):").grid(row=0, column=0)
         crop_top_entry.grid(row=0, column=1, padx=5)
-        tk.Label(crop_inputs_frame, text="Bottom crop (px):").grid(row=1, column=0)
-        crop_bottom_entry.grid(row=1, column=1, padx=5)
+
     elif crop_mode == "crop_specific":
         tk.Label(crop_inputs_frame, text="Top crop (px):").grid(row=0, column=0)
         crop_top_entry.grid(row=0, column=1, padx=5)
@@ -135,7 +148,7 @@ crop_mode_menu.pack(side=tk.LEFT)
 crop_inputs_frame = tk.Frame(root)
 crop_inputs_frame.pack(pady=5)
 
-# Default input fields
+# Input fields
 crop_all_entry = tk.Entry(crop_inputs_frame, width=6)
 crop_all_entry.insert(0, "200")
 crop_left_entry = tk.Entry(crop_inputs_frame, width=6)
@@ -147,7 +160,7 @@ crop_top_entry.insert(0, "200")
 crop_bottom_entry = tk.Entry(crop_inputs_frame, width=6)
 crop_bottom_entry.insert(0, "200")
 
-# Update crop input fields based on selected mode
+# Update crop inputs based on mode
 crop_mode_var.trace("w", update_crop_inputs)
 update_crop_inputs()
 
